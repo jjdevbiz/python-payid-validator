@@ -37,25 +37,43 @@ def validate_payid(
     if len(payId) > 254:
         raise PayIdSyntaxError("The PayId is too long.")
 
-    if '$' not in payId:
+    try:
+        raw_label, raw_domain_host = payId.rsplit('$',1) # split at the last '$'
+    except:
         raise PayIdSyntaxError("The required $ separator is missing.")
 
-    raw_label, raw_domain_host = payId.rsplit('$',1)
-    if len(raw_label) < 1:
-        raise PayIdSyntaxError("The user label is empty.")
-
-    if '.' not in raw_domain_host:
-        raise PayIdSyntaxError("Required '.' in the domain is missing.")
-
+    # Start by cleaning the user_label
     user_label = raw_label.lower()
+    if user_label.startswith("payid:"):
+        user_label = user_label[6:]
+
+    # Perform the basic syntax testing of the user_label
     if ignore_case is False and user_label != raw_label:
         raise PayIdSyntaxError("The payID user label has bad characters (uppercase).")
 
+    if len(user_label) < 1:
+        raise PayIdSyntaxError("The payID username is empty.")
+
+    # FIXME More testing needed. (Special unicode handling will come later.)
+
+    # Now clean the domain host
     domain_host = raw_domain_host.lower()
-    if ignore_case is False and domain_host != raw_domain_host:
-        raise PayIdSyntaxError("The payID domain host has bad characters (uppercase).")
+
+    # Perform basic syntax checks for the domain host unless we are skipping the domain checking.
+    if check_domain is True:
+        if ignore_case is False and domain_host != raw_domain_host:
+            raise PayIdSyntaxError("The payID domain host has bad characters (uppercase).")
+
+        if '.' not in domain_host:
+            raise PayIdSyntaxError("Required '.' in the domain is missing.")
+
+        if domain_host[0] == '.':
+            raise PayIdSyntaxError("The domain host cannot start with '.'.")
+
+        if domain_host[-1] == '.':
+            raise PayIdSyntaxError("The domain host cannot end with '.'.")
 
     # FIXME -- More checking is required!
  
-    return user_label + '$' + domain_host
+    return "payid:" + user_label + '$' + domain_host
 

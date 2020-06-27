@@ -25,20 +25,18 @@ The first version supports these options:
 - check_domain (default: True)
 
 If validation is successful, the function returns the valid PayId. It will always be lower case only.
+It includes the 'payid:' prefix whether or not the input string included it. (i.e., It is OK to not include it.)
 
 If 'ignore_case' is True, then the returned PayId string may not match the submitted one if any characters were changed to lower case as part of the validation process.
 
-If 'check_domain' is False then the domain portion of the PayId is not checked beyond some trivial syntax checking.
+If 'check_domain' is False then the domain portion of the PayId is not checked.
 
 All validation failures should result in thrown exceptions.
 
 ```
 class PayIdSyntaxError(PayIdNotValidError):
     """Exception raised when a payId fails validation because of its' form."""
-```
 
-```
 class PayIdUnusableError(PayIdNotValidError):
     """Exception raised when a payId fails validation because its' domain name does not appear usable."""
 ```
-
