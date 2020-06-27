@@ -2,9 +2,10 @@
 
 A python-based validator for the emerging PayId URI standard.
 
-This version targets version 1.0 of the PayId standard.
+This version targets version 1.0 of the PayId standard. This includes:
 
-Add links to the spec here.
+- URI spec: [RFCS draftfuelling-payid-uri-01](https://github.com/payid-org/rfcs/blob/master/dist/spec/payid-uri.txt)
+- Whitepaper [PayID Protocol](https://payid.org/whitepaper.pdf)
 
 ### Caveats
 
@@ -20,14 +21,14 @@ These limitations will be addressed over time.
 
 The first version supports these options:
 
-- ignore_case (default: False)
+- ignore_case (default: True)
 - check_domain (default: True)
 
 If validation is successful, the function returns the valid PayId. It will always be lower case only.
 
 If 'ignore_case' is True, then the returned PayId string may not match the submitted one if any characters were changed to lower case as part of the validation process.
 
-If 'check_domain' is False then the domain portion of the PayId is not checked. This can save time in situations where your code is always using the same domain every time that you invoke the validator.
+If 'check_domain' is False then the domain portion of the PayId is not checked beyond some trivial syntax checking.
 
 All validation failures should result in thrown exceptions.
 

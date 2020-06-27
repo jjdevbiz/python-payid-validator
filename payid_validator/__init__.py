@@ -30,7 +30,7 @@ class PayIdUnusableError(PayIdNotValidError):
 
 def validate_payid(
     payId,
-    ignore_case=False,
+    ignore_case=True,
     check_domain=True
 ):
 
