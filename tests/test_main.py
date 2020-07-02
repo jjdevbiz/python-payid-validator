@@ -6,41 +6,45 @@ from payid_validator import PayIdSyntaxError, PayIdUnusableError, validate_payid
     [
         (
             'Abc$example.com',
-            'payid:abc$example.com'
+            'abc$example.com'
         ),
         (
             'payid:ABC$Example.com',
-            'payid:abc$example.com'
+            'abc$example.com'
         ),
         (
             'rockhoward.reddit$payid.rockhoward.com',
-            'payid:rockhoward.reddit$payid.rockhoward.com'
+            'rockhoward.reddit$payid.rockhoward.com'
         ),
         (
             'rockhoward.reddit$PayId.rockhoward.com',
-            'payid:rockhoward.reddit$payid.rockhoward.com'
+            'rockhoward.reddit$payid.rockhoward.com'
         ),
         (
             'rockhoward@reddit$payid.rockhoward.com',
-            'payid:rockhoward@reddit$payid.rockhoward.com'
+            'rockhoward@reddit$payid.rockhoward.com'
         ),
         (
             'rock$howard@reddit$payid.rockhoward.com',
-            'payid:rock$howard@reddit$payid.rockhoward.com'
+            'rock$howard@reddit$payid.rockhoward.com'
         ),
         (
             'payid:Yamood.reddit$payid.rockhoward.com',
-            'payid:yamood.reddit$payid.rockhoward.com'
+            'yamood.reddit$payid.rockhoward.com'
         ),
         (
             'Rock-How_ard.reddit$PayId.rockhoward.com',
-            'payid:rock-how_ard.reddit$payid.rockhoward.com'
+            'rock-how_ard.reddit$payid.rockhoward.com'
         )
     ]
 )
 
 def test_payid_valid(payId_input, output):
     assert validate_payid(payId_input) == output
+
+def test_payid_prefix_valid():
+    output = validate_payid('RockHoward$PayId.RockHoward.com', include_prefix=True)
+    assert output == 'payid:rockhoward$payid.rockhoward.com'
 
 @pytest.mark.parametrize(
     'payId_input',

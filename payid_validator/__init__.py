@@ -31,7 +31,8 @@ class PayIdUnusableError(PayIdNotValidError):
 def validate_payid(
     payId,
     ignore_case=True,
-    check_domain=True
+    check_domain=True,
+    include_prefix = False
 ):
 
     if len(payId) > 254:
@@ -74,6 +75,11 @@ def validate_payid(
             raise PayIdSyntaxError("The domain host cannot end with '.'.")
 
     # FIXME -- More checking is required!
- 
-    return "payid:" + user_label + '$' + domain_host
-
+    if include_prefix is True:
+        results = ["payid:"]
+    else:
+        results = ['']
+    results.append(user_label)
+    results.append('$')
+    results.append(domain_host)
+    return ''.join(results)
