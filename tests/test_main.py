@@ -2,7 +2,7 @@ import pytest
 from payid_validator import PayIdSyntaxError, PayIdUnusableError, validate_payid
 
 @pytest.mark.parametrize(
-    'payId_input,output',
+    'payId_input,payId_output',
     [
         (
             'Abc$example.com',
@@ -39,12 +39,9 @@ from payid_validator import PayIdSyntaxError, PayIdUnusableError, validate_payid
     ]
 )
 
-def test_payid_valid(payId_input, output):
-    assert validate_payid(payId_input) == output
-
-def test_payid_prefix_valid():
-    output = validate_payid('RockHoward$PayId.RockHoward.com', include_prefix=True)
-    assert output == 'payid:rockhoward$payid.rockhoward.com'
+def test_payid_valid(payId_input, payId_output):
+    output = validate_payid(payId_input)
+    assert payId_output == output.normalized_payId
 
 @pytest.mark.parametrize(
     'payId_input',
