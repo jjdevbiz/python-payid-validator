@@ -41,7 +41,7 @@ from payid_validator import PayIdSyntaxError, PayIdUnusableError, validate_payid
 
 def test_payid_valid(payId_input, payId_output):
     output = validate_payid(payId_input)
-    assert payId_output == output.normalized_payId
+    assert payId_output == str(output)
 
 @pytest.mark.parametrize(
     'payId_input',
