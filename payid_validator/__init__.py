@@ -156,7 +156,7 @@ def validate_payid(
     try:
         acct_part = acct_part_profile.enforce(raw_acct_part)
     except UnicodeEncodeError as e:
-        raise PayIdEncodingError("Unicode Username Error." + repr(e))
+        raise PayIdEncodingError("Unicode Error: " + repr(e))
     ValPayId.acct_part = acct_part
 
     try:
@@ -182,10 +182,10 @@ def validate_payid(
             raise PayIdSyntaxError("Required '.' in the domain is missing.")
 
         if domain[0] == '.':
-            raise PayIdSyntaxError("The domain cannot start with '.'.")
+            raise PayIdSyntaxError("The payId domain cannot start with '.'.")
 
         if domain[-1] == '.':
-            raise PayIdSyntaxError("The domain cannot end with '.'.")
+            raise PayIdSyntaxError("The payId domain cannot end with '.'.")
 
         if contains_whitespace( domain ):
             raise PayIdSyntaxError("The payID domain has bad characters (whitespace).")
