@@ -129,7 +129,6 @@ class ValidatedPayId(object):
 
 def validate_payid(
     payId,
-    ignore_case=True,
     check_domain=True
 ):
 
@@ -176,7 +175,7 @@ def validate_payid(
 
     # Perform basic syntax checks for the domain unless we are skipping the domain checking.
     if check_domain is True:
-        if ignore_case is False and domain != raw_domain:
+        if domain != raw_domain:
             raise PayIdSyntaxError("The payID domain has bad characters (uppercase).")
 
         if '.' not in domain:

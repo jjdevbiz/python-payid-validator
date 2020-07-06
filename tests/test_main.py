@@ -9,7 +9,7 @@ from payid_validator import PayIdSyntaxError, PayIdUnusableError, validate_payid
             'abc$example.com'
         ),
         (
-            'payid:ABC$Example.com',
+            'payid:ABC$example.com',
             'abc$example.com'
         ),
         (
@@ -17,8 +17,8 @@ from payid_validator import PayIdSyntaxError, PayIdUnusableError, validate_payid
             'rockhoward.reddit$payid.rockhoward.com'
         ),
         (
-            'rockhoward.reddit$PayId.rockhoward.com',
-            'rockhoward.reddit$payid.rockhoward.com'
+            'rockhoward-name.reddit$payid.rockhoward.com',
+            'rockhoward-name.reddit$payid.rockhoward.com'
         ),
         (
             'rockhoward@reddit$payid.rockhoward.com',
@@ -37,7 +37,7 @@ from payid_validator import PayIdSyntaxError, PayIdUnusableError, validate_payid
             'yamood.reddit$payid.rockhoward.com'
         ),
         (
-            'Rock-How_ard.reddit$PayId.rockhoward.com',
+            'Rock-How_ard.reddit$payid.rockhoward.com',
             'rock-how_ard.reddit$payid.rockhoward.com'
         )
     ]
@@ -73,4 +73,4 @@ def test_payid_valid(payId_input, payId_output):
 
 def test_payid_syntax(payId_input):
     with pytest.raises(PayIdSyntaxError) as excinfo:
-        validate_payid(payId_input, ignore_case=False)
+        validate_payid(payId_input)

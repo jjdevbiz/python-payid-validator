@@ -9,17 +9,16 @@ This version targets version 1.0 of the PayId standard. This includes:
 
 ### Caveats
 
-The first version of this validator is handling just the basics. This means:
+This second alpha version of this validator is still pretty basic. This means:
 
-- No characters other than ascii are allowed.
 - No DNS checking is done.
 - Some required syntax checks may be missing.
+- While support for i18n is now onboard, there are no unit tests for it yet.
 
 ### Options
 
-The current version (0.2) of the validate_payid function supports these options:
+The current version (0.2) of the validate_payid function supports one option:
 
-- ignore_case (default: True)
 - check_domain (default: True)
 
 If validation is successful, the function returns a ValidatedPayId object.
@@ -40,20 +39,18 @@ If you want to get the full uri (i.e., include the leading 'payid:' prefix), use
     validated_payid_uri = validate_payid(raw_payid).as_uri())
 ```
 
-If 'ignore_case' is True, then the returned PayId string may not match the submitted one if any characters
-were changed to lower case as part of the validation process.
-
 If 'check_domain' is False then the domain portion of the PayId is not checked.
+This can save time if you are only using a well-known domain.
 
 All validation failures should result in thrown exceptions.
 
 ```
+class PayIdEncodingError(PayIdNotValidError):
+    """Exception raised due to a unicode error or whitespace or such."""
+
 class PayIdSyntaxError(PayIdNotValidError):
     """Exception raised when a payId fails validation because of its' form."""
 
 class PayIdUnusableError(PayIdNotValidError):
     """Exception raised when a payId fails validation because its' domain name does not appear usable."""
 ```
-
-This version performs a variety of syntax checks but will only work for ascii characters at this time.
-Support for the full set of allowed unicode characters will be included in the next release.
