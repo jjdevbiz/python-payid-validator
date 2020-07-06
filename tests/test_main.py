@@ -29,6 +29,10 @@ from payid_validator import PayIdSyntaxError, PayIdUnusableError, validate_payid
             'rock$howard@reddit$payid.rockhoward.com'
         ),
         (
+            'Yamood.reddit$payid.rockhoward.com',
+            'yamood.reddit$payid.rockhoward.com'
+        ),
+        (
             'payid:Yamood.reddit$payid.rockhoward.com',
             'yamood.reddit$payid.rockhoward.com'
         ),
@@ -47,16 +51,10 @@ def test_payid_valid(payId_input, payId_output):
     'payId_input',
     [
         (
-            'Abc$example.com'
-        ),
-        (
             'ABC$Example.com'
         ),
         (
             'rockhoward.reddit$PayId.rockhoward.com'
-        ),
-        (
-            'Yamood.reddit$payid.rockhoward.com'
         ),
         (
             'Rock-How_ard.reddit$PayId.rockhoward.com'

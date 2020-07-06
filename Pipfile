@@ -1,0 +1,18 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[dev-packages]
+pytest = "*"
+coverage = "*"
+docutils = "*"
+flake8 = "*"
+pytest-cov = "*"
+
+[packages]
+payid-validator = {editable = true, path = "."}
+precis-i18n = "*"
+
+[requires]
+python_version = "3.6"

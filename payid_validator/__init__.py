@@ -1,6 +1,10 @@
 # -*- coding: utf-8 -*-
 import string
 import sys
+from precis_i18n import get_profile
+
+
+acct_part_profile = get_profile('UsernameCaseMapped')  # Used for precis 8264 checking.
 
 # This code is inspired by the PayId project.
 # This validator is informed by JoshData's python-email-validator.
@@ -9,6 +13,11 @@ import sys
 
 class PayIdNotValidError(ValueError):
     """Parent class of all exceptions raised by this module."""
+    pass
+
+
+class PayIdEncodingError(PayIdNotValidError):
+    """Exception raised due to a unicode error or whitespace or such."""
     pass
 
 
@@ -143,29 +152,24 @@ def validate_payid(
     ValPayId.raw_domain = raw_domain
 
     # Start by cleaning the account part
-    # (Skipping unicode normalization for now.)
+    # We use precis_i18n package to do this.
+    # 
     try:
-        ascii_acct_part = raw_acct_part
+        acct_part = acct_part_profile.enforce(raw_acct_part)
+    except UnicodeEncodeError as e:
+        raise PayIdEncodingError("Unicode Username Error." + repr(e))
+    ValPayId.acct_part = acct_part
+
+    try:
+        ascii_acct_part = acct_part
         ascii_acct_part.encode('ascii')
     except Exception as e:
-        # FIXME - we should handle non-ascii charaters here
-        raise PayIdSyntaxError("The payID user label has bad characters (non-ascii)." + repr(e))
-
-    if len(ascii_acct_part) < 1:
-        raise PayIdSyntaxError("The payID account part is empty.")
-
-    if contains_whitespace( ascii_acct_part ):
-        raise PayIdSyntaxError("The payID user label has bad characters (whitespace).")
-
-    # Change to lowercase and perform optional error check.
-    ascii_acct_part = ascii_acct_part.lower()
-    if ignore_case is False and ascii_acct_part != ValidatedPayId.raw_acct_part:
-        raise PayIdSyntaxError("The payID user label has bad characters (uppercase).")
-
-    # FIXME -- More account part testing needed. (Special unicode handling will come later.)
-
+        # ascii encoding failed
+        ascii_acct_part = None
     ValPayId.ascii_acct_part = ascii_acct_part
-    ValPayId.acct_part = ascii_acct_part
+
+    # FIXME -- Is more account part testing needed?
+
 
     # Now clean the domain
     domain = raw_domain.lower()
