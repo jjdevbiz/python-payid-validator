@@ -87,7 +87,23 @@ from payid_validator import PayIdEncodingError, PayIdSyntaxError, PayIdUnusableE
         (
             'ιωάννης$εεττ.gr',
             'ιωάννης$εεττ.gr'
+        ),
+        # (
+        #     '葉士豪$臺網中心.tw',
+        #     '葉士豪$臺網中心.tw'
+        # ),
+        (
+            'jeff$臺網中心.tw',
+            'jeff$臺網中心.tw'
         )
+        # (
+        #      '葉士豪$臺網中心.台灣',
+        #      '葉士豪$臺網中心.台灣'
+        # )
+        # (
+        #     'jeff葉$臺網中心.tw',
+        #     'jeff葉$臺網中心.tw'
+        # )
     ]
 )
 
