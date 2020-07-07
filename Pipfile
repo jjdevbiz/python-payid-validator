@@ -11,8 +11,8 @@ flake8 = "*"
 pytest-cov = "*"
 
 [packages]
-payid-validator = {editable = true, path = "."}
 precis-i18n = "*"
+idna = "*"
 
 [requires]
 python_version = "3.6"

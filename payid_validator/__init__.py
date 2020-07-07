@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import string
 import sys
+import idna
 from precis_i18n import get_profile
 
 
@@ -34,6 +35,10 @@ class PayIdSyntaxError(PayIdNotValidError):
     """Exception raised when an payId address fails validation because of its form."""
     pass
 
+
+class PayIdDomainEncodingError(PayIdNotValidError):
+    """Exception raised when an payId address fails validation because of its form."""
+    pass
 
 class PayIdUnusableError(PayIdNotValidError):
     """Exception raised when an payId address fails validation because its' domain name does not appear to be usable."""
@@ -183,7 +188,15 @@ def validate_payid(
     # Now clean the domain host
     # FIXME -- It is time to rework this for proper domain host checking.
     #
-    domain = raw_domain.lower()
+    try:
+        idna_encoded_domain = idna.encode(raw_domain)
+        domain = idna_encoded_domain.decode('idna')
+        domain_utf8 = domain.encode('utf-8')
+    except idna.IDNAError as e:
+        raise PayIdDomainEncodingError("Domain Error: " + repr(e))
+
+    """
+    # domain = raw_domain.lower()
 
     # Perform basic syntax checks for the domain unless we are skipping the domain checking.
     if check_domain is True:
@@ -196,28 +209,30 @@ def validate_payid(
         if domain[0] == '.':
             raise PayIdSyntaxError("The payId domain cannot start with '.'.")
 
-        if domain[-1] == '.':
-            raise PayIdSyntaxError("The payId domain cannot end with '.'.")
-
         if contains_whitespace( domain ):
             raise PayIdSyntaxError("The payID domain has bad characters (whitespace).")
-        
-        # FIXME -- Add domain DNS checking for A or AAAA records.
+    """
+
+    # FIXME -- Add domain DNS checking for A or AAAA records.
 
     ValPayId.domain = domain
-    # Still Not sure we need to mess with the ascii version, but the email package that I copied
-    # is doing this and so we include this as well for now.
+
+    # For cleanliness we are enforcing lowercase domain if the domain is ascii.
     #
     try:
         ascii_domain = domain
         ascii_domain.encode('ascii')
+        ascii_domain = ascii_domain.lower()
     except Exception as e:
         # ascii encoding failed
         ascii_domain = None
-    ValPayId.ascii_domain = domain
+    ValPayId.ascii_domain = ascii_domain
 
     # Finally assemble the final cleaned PayId.
     #
-    ValPayId.payId = ''.join([ValPayId.acct_part, '$', ValPayId.domain])
+    if ValPayId.ascii_domain is not None:
+        ValPayId.payId = ''.join([ValPayId.acct_part, '$', ValPayId.ascii_domain])
+    else:
+        ValPayId.payId = ''.join([ValPayId.acct_part, '$', ValPayId.domain])
 
     return ValPayId
