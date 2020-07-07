@@ -39,6 +39,54 @@ from payid_validator import PayIdEncodingError, PayIdSyntaxError, PayIdUnusableE
         (
             'Rock-How_ard.reddit$payid.rockhoward.com',
             'rock-how_ard.reddit$payid.rockhoward.com'
+        ),
+        (
+            'user+mailbox/department=shipping$example.com',
+            'user+mailbox/department=shipping$example.com',
+        ),
+        (
+            "!#$%&'*+-/=?^_`.{|}~$example.com",
+            "!#$%&'*+-/=?^_`.{|}~$example.com"
+        ),
+        (
+            '伊昭傑$郵件.商務',
+            '伊昭傑$郵件.商務'
+        ),
+        (
+            'राम$मोहन.ईन्फो',
+            'राम$मोहन.ईन्फो'
+        ),
+        (
+            'юзер$екзампл.ком',
+            'юзер$екзампл.ком'
+        ),
+        (
+            'θσερ$εχαμπλε.ψομ',
+            'θσερ$εχαμπλε.ψομ'
+        ),
+        (
+            'ñoñó$example.com',
+            'ñoñó$example.com'
+        ),
+        (
+            '我買$example.com',
+            '我買$example.com',
+        ),
+        (
+            '甲斐黒川日本$example.com',
+            '甲斐黒川日本$example.com'
+        ),
+        (
+            'чебурашкаящик-с-апельсинами.рф$example.com',
+            'чебурашкаящик-с-апельсинами.рф$example.com'
+        ),
+        (
+            'उदाहरण.परीक्ष$domain.with.idn.tld',
+            'उदाहरण.परीक्ष$domain.with.idn.tld'
+        ),
+        (
+            'ιωάννης$εεττ.gr',
+            'ιωάννης$εεττ.gr'
         )
     ]
 )
@@ -54,7 +102,19 @@ def test_payid_valid(payId_input, payId_output):
         (
             'rock howard.reddit$payid.rockhoward.com',
             "DISALLOWED/spaces"
-        )
+        ),
+        (
+            'rock_\xad_howard$payid.rockhoward.com',
+            'DISALLOWED/precis_ignorable_properties'
+        ),
+        (
+            'rock_\u1100_howard$payid.rockhoward.com',
+            'DISALLOWED/old_hangul_jamo'
+        ),
+        (
+            'rock_\u1FBF_howard$payid.rockhoward.com',
+            'DISALLOWED/has_compat'
+        ),
     ]
 )
 

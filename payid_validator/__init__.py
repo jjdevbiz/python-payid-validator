@@ -196,6 +196,6 @@ def validate_payid(
     ValPayId.ascii_domain = domain
     ValPayId.domain = domain
 
-    ValPayId.payId = ''.join([ValPayId.ascii_acct_part, '$', ValPayId.ascii_domain])
+    ValPayId.payId = ''.join([ValPayId.acct_part, '$', ValPayId.domain])
 
     return ValPayId
