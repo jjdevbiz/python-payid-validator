@@ -8,8 +8,17 @@ acct_part_profile = get_profile('UsernameCaseMapped')  # Used for precis 8264 ch
 
 # This code is inspired by the PayId project.
 # This validator is informed by JoshData's python-email-validator.
-# We are going to focus on python 3 and so we can sssume unicode.
+# We are going to focus on python 3 and so we can assume unicode.
 
+# Here are the guiding concepts from payid-org/rfcs/payid-uri.txt on github:
+#
+#    o  The 'acctpart' consists only of Unicode code points that conform
+#       to the PRECIS IdentifierClass specified in [RFC8264]. (DONE - needs more testing)
+#
+#    o  The 'host' consists only of Unicode code points that conform to [RFC5892]. (FIXME)
+#
+#    o  Internationalized domain name (IDN) labels are encoded as A-labels [RFC5890]. (FIXME)
+#
 
 class PayIdNotValidError(ValueError):
     """Parent class of all exceptions raised by this module."""
@@ -151,7 +160,7 @@ def validate_payid(
     ValPayId.raw_domain = raw_domain
 
     # Start by cleaning the account part
-    # We use precis_i18n package to do this.
+    # We use the precis_i18n package to do this.
     # 
     try:
         acct_part = acct_part_profile.enforce(raw_acct_part)
@@ -159,6 +168,9 @@ def validate_payid(
         raise PayIdEncodingError("Unicode Error: " + repr(e))
     ValPayId.acct_part = acct_part
 
+    # Not sure we need to mess with the ascii version, but the email package that I copied
+    # is doing this and so we include this as well for now.
+    #
     try:
         ascii_acct_part = acct_part
         ascii_acct_part.encode('ascii')
@@ -167,10 +179,10 @@ def validate_payid(
         ascii_acct_part = None
     ValPayId.ascii_acct_part = ascii_acct_part
 
-    # FIXME -- Is more account part testing needed?
 
-
-    # Now clean the domain
+    # Now clean the domain host
+    # FIXME -- It is time to rework this for proper domain host checking.
+    #
     domain = raw_domain.lower()
 
     # Perform basic syntax checks for the domain unless we are skipping the domain checking.
@@ -189,13 +201,23 @@ def validate_payid(
 
         if contains_whitespace( domain ):
             raise PayIdSyntaxError("The payID domain has bad characters (whitespace).")
-
-        # FIXME -- More domain testing needed. (Special unicode handling will come later.)
+        
         # FIXME -- Add domain DNS checking for A or AAAA records.
 
-    ValPayId.ascii_domain = domain
     ValPayId.domain = domain
+    # Still Not sure we need to mess with the ascii version, but the email package that I copied
+    # is doing this and so we include this as well for now.
+    #
+    try:
+        ascii_domain = domain
+        ascii_domain.encode('ascii')
+    except Exception as e:
+        # ascii encoding failed
+        ascii_domain = None
+    ValPayId.ascii_domain = domain
 
+    # Finally assemble the final cleaned PayId.
+    #
     ValPayId.payId = ''.join([ValPayId.acct_part, '$', ValPayId.domain])
 
     return ValPayId
