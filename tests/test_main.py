@@ -88,6 +88,7 @@ from payid_validator import PayIdEncodingError, PayIdSyntaxError, PayIdUnusableE
             'ιωάννης$εεττ.gr',
             'ιωάννης$εεττ.gr'
         ),
+        # Why do 3 of the final 4 tests fail? (Commented out for now.)
         # (
         #     '葉士豪$臺網中心.tw',
         #     '葉士豪$臺網中心.tw'
@@ -131,6 +132,18 @@ def test_payid_valid(payId_input, payId_output):
             'rock_\u1FBF_howard$payid.rockhoward.com',
             'DISALLOWED/has_compat'
         ),
+        (
+            '\nmy$example.com',
+            'DISALLOWED/controls'
+        ),
+        (
+            'm\ny$example.com',
+            'DISALLOWED/controls'
+        ),
+        (
+            'my\n$example.com',
+            'DISALLOWED/controls'
+        )
     ]
 )
 
