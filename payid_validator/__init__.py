@@ -45,10 +45,6 @@ class PayIdUnusableError(PayIdNotValidError):
     pass
 
 
-def contains_whitespace(s):
-    return True in [c in s for c in string.whitespace]
-
-
 class ValidatedPayId(object):
     """The validate_payId function returns an object of this type.
        It holds the normalized form of the payId address and other information."""
@@ -143,7 +139,7 @@ class ValidatedPayId(object):
 
 def validate_payid(
     payId,
-    check_domain=True
+    skip_DNS_check=False
 ):
 
     if payId.startswith("payid:"):
@@ -184,9 +180,7 @@ def validate_payid(
         ascii_acct_part = None
     ValPayId.ascii_acct_part = ascii_acct_part
 
-
     # Now clean the domain host
-    # FIXME -- It is time to rework this for proper domain host checking.
     #
     try:
         idna_encoded_domain = idna.encode(raw_domain)
@@ -195,25 +189,7 @@ def validate_payid(
     except idna.IDNAError as e:
         raise PayIdDomainEncodingError("Domain Error: " + repr(e))
 
-    """
-    # domain = raw_domain.lower()
-
-    # Perform basic syntax checks for the domain unless we are skipping the domain checking.
-    if check_domain is True:
-        if domain != raw_domain:
-            raise PayIdSyntaxError("The payID domain has bad characters (uppercase).")
-
-        if '.' not in domain:
-            raise PayIdSyntaxError("Required '.' in the domain is missing.")
-
-        if domain[0] == '.':
-            raise PayIdSyntaxError("The payId domain cannot start with '.'.")
-
-        if contains_whitespace( domain ):
-            raise PayIdSyntaxError("The payID domain has bad characters (whitespace).")
-    """
-
-    # FIXME -- Add domain DNS checking for A or AAAA records.
+    # FIXME -- Add DNS checking for A or AAAA records (if not skipped.)
 
     ValPayId.domain = domain
 

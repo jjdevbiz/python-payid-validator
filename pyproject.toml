@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "python-payid-validator"
+name = "payid-validator"
 version = "0.1.0"
 description = "A validation function for the PayId URI."
 authors = ["Rock Howard <rockmhoward@gmail.com>"]

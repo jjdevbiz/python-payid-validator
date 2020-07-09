@@ -219,6 +219,22 @@ def test_payid_syntax(payId_input, payId_message):
         (
             'rockhoward$.gmail.com',
             'Empty Label'
+        ),
+        (
+            'rockhoward$-gmail.com',
+            'Label must not start or end with a hyphen'
+        ),
+        (
+            'rockhoward$gmail-.com',
+            'Label must not start or end with a hyphen'
+        ),
+        (
+            'rockhoward$gmail.-com',
+            'Label must not start or end with a hyphen'
+        ),
+        (
+            'rockhoward$gmail.com-',
+            'Label must not start or end with a hyphen'
         )
     ]
 )
